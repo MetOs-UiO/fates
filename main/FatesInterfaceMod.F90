@@ -1296,8 +1296,12 @@ contains
          hlm_use_fixed_biogeog = unset_int
          hlm_use_nocomp = unset_int   
          hlm_use_sp = unset_int
+         hlm_use_mosslichen = unset_int
+         hlm_use_mosslichen_undersnow = unset_int
+         hlm_use_mosslichen_photosyn = unset_int
          hlm_use_inventory_init = unset_int
          hlm_inventory_ctrl_file = 'unset'
+         
 
       case('check_allset')
          
@@ -1594,6 +1598,27 @@ contains
             end if
 	       call endrun(msg=errMsg(sourcefile, __LINE__))
          end if
+         
+         if(hlm_use_mosslichen.eq.unset_int) then
+            if(fates_global_verbose()) then
+               write(fates_log(), *) 'switch for moss&lichen mode unset: hlm_use_mosslichen, exiting'
+            end if
+            call endrun(msg=errMsg(sourcefile, __LINE__))
+         end if
+
+         if(hlm_use_mosslichen_undersnow.eq.unset_int) then
+            if(fates_global_verbose()) then
+               write(fates_log(), *) 'switch for moss&lichen undersnow mode unset: hlm_use_mosslichen_undersnow, exiting'
+            end if
+            call endrun(msg=errMsg(sourcefile, __LINE__))
+         end if
+
+         if(hlm_use_mosslichen_photosyn.eq.unset_int) then
+            if(fates_global_verbose()) then
+               write(fates_log(), *) 'Types of moss&lichen photosynthesis unset: hlm_use_mosslichen_photosyn, exiting'
+            end if
+            call endrun(msg=errMsg(sourcefile, __LINE__))
+         end if
 
          if(hlm_use_cohort_age_tracking .eq. unset_int) then
             if (fates_global_verbose()) then
@@ -1612,6 +1637,16 @@ contains
             write(fates_log(), *) 'SP cannot be on if fixed biogeog mode is off. Exiting. '
             call endrun(msg=errMsg(sourcefile, __LINE__))
          end if
+         
+         !if(hlm_use_mosslichen_undersnow.eq.itrue .and. hlm_use_mosslichen.eq.ifalse)then
+         !    write(fates_log(), *) 'hlm_use_mosslichen_undersnow cannot be on if moss&lichen mode is off. Exiting. '
+         !  call endrun(msg=errMsg(sourcefile, __LINE__))
+         !end if
+
+         if(hlm_use_mosslichen_photosyn >= 4)then
+            write(fates_log(), *) 'hlm_use_mosslichen_photosyn cannot be over 3. Exiting.'
+            call endrun(msg=errMsg(sourcefile, __LINE__))
+          end if
          
          if (fates_global_verbose()) then
             write(fates_log(), *) 'Checked. All control parameters sent to FATES.'
@@ -1750,6 +1785,24 @@ contains
             if (fates_global_verbose()) then
                    write(fates_log(),*) 'Transfering hlm_use_sp= ',ival,' to FATES'
             end if
+
+            case('use_mosslichen')
+               hlm_use_mosslichen = ival
+               if (fates_global_verbose()) then
+                  write(fates_log(),*) 'Transfering hlm_use_mosslichen= ',ival,' to FATES'
+               end if
+
+            case('use_mosslichen_undersnow')
+               hlm_use_mosslichen_undersnow = ival
+               if (fates_global_verbose()) then
+                  write(fates_log(),*) 'Transfering hlm_use_mosslichen_undersnow= ',ival,' to FATES'
+               end if
+
+            case('use_mosslichen_photosyn')
+               hlm_use_mosslichen_photosyn = ival
+               if (fates_global_verbose()) then
+                  write(fates_log(),*) 'Transfering hlm_use_mosslichen_photosyn= ',ival,' to FATES'
+               end if
 
             case('use_planthydro')
                hlm_use_planthydro = ival
